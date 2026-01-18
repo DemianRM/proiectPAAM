@@ -1,0 +1,24 @@
+package com.example.demo.repositories;
+
+import com.example.demo.models.Exercise;
+import com.example.demo.models.ExerciseType;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+
+public interface ExerciseRepository extends JpaRepository<Exercise, Integer> {
+//    List<Exercise> findbydateanduserId(String date, Integer user_id);
+//    Exercise findbyexerciseIdanduserIdanddate(Integer exercise_id, Integer user_id, String date);
+
+    @Query("SELECT e FROM Exercise e  WHERE  e.date = :input_date ")
+    List<Exercise> findbydateanduserId(@Param("input_date") String date);
+
+    @Query(value = "SELECT exercise.muscle_group, COUNT(exercise.muscle_group) from exercise where exercise.ue_fk = :email group by muscle_group",
+    nativeQuery = true)
+    List<Object[]> countByMuscleGroup(@Param("email") String email);
+
+    @Query("SELECT e FROM Exercise e  WHERE  e.date = :input_date AND e.exerciseId = :input_eid")
+    List<Exercise> findbyexerciseIdanduserIdanddate(@Param("input_date") String date, @Param("input_eid") ExerciseType exercise_id );
+}
